@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": ["type", "spec"],
+    "properties": {
+      "type": {
+        "type": "string",
+        "enum": ["database"]
+      },
+      "spec": {
+        "type": "object",
+        "required": ["engine", "version"],
+        "properties": {
+          "engine": {
+            "type": "string",
+            "enum": ["postgres", "mysql", "mongodb"],
+            "description": "Database engine type"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+            "description": "Database version (e.g., '15.2' or '8.0')"
+          },
+          "storage": {
+            "type": "string",
+            "pattern": "^\\d+[MGT]i$",
+            "description": "Storage size (e.g., '10Gi' or '1Ti')"
+          },
+          "settings": {
+            "type": "object",
+            "properties": {
+              "maxConnections": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5000,
+                "description": "Maximum number of connections"
+              },
+              "backupRetentionDays": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Number of days to retain backups"
+              },
+              "highAvailability": {
+                "type": "boolean",
+                "description": "Enable high availability setup"
+              }
+            }
+          },
+          "security": {
+            "type": "object",
+            "properties": {
+              "encrypted": {
+                "type": "boolean",
+                "description": "Enable storage encryption"
+              },
+              "networkPolicy": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "Allowed source services or CIDRs"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

@@ -1,0 +1,16 @@
+kind: Scope
+name: { { .Name } }
+version: { { .Version } }
+environment: { { .Environment } }
+
+resources:
+  db:
+    type: database
+    spec:
+      engine: { { .Variables.engine | default "postgres" } }
+      version: { { .Variables.dbVersion | default "15" } }
+      storage: { { .Variables.storage | default "10Gi" } }
+
+      settings:
+        maxConnections: { { .Variables.maxConnections | default 100 } }
+        backupRetentionDays: { { .Variables.backupRetentionDays | default 7 } }

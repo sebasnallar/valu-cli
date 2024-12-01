@@ -1,0 +1,24 @@
+kind: Scope
+name: test-project
+version: 1.0.0
+environment: development
+
+resources:
+  web-service:
+    type: service
+    spec:
+      image: nginx:latest
+      replicas: 2
+      ports:
+        - name: http
+          port: 80
+      resources:
+        cpu: 100m
+        memory: 256Mi
+  
+  user-db:
+    type: database
+    spec:
+      engine: postgres
+      version: "15.0"
+      storage: 10Gi

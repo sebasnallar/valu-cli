@@ -1,0 +1,136 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": ["Kind", "Name", "Version", "Environment", "Resources"],
+    "properties": {
+        "Kind": {
+            "type": "string",
+            "enum": ["Scope"]
+        },
+        "Name": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+        },
+        "Version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "Environment": {
+            "type": "string",
+            "enum": ["development", "staging", "production"]
+        },
+        "Resources": {
+            "type": "object",
+            "additionalProperties": {
+                "oneOf": [
+                    { "$ref": "#/definitions/service" },
+                    { "$ref": "#/definitions/database" }
+                ]
+            },
+            "minProperties": 1
+        },
+        "Metadata": {
+            "type": ["object", "null"],
+            "properties": {
+                "Labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "Annotations": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "service": {
+            "type": "object",
+            "required": ["Type", "Spec"],
+            "properties": {
+                "Type": {
+                    "type": "string",
+                    "enum": ["service"]
+                },
+                "Spec": {
+                    "type": "object",
+                    "required": ["image", "replicas"],
+                    "properties": {
+                        "image": {
+                            "type": "string",
+                            "pattern": "^[a-zA-Z0-9.-]+(?::[a-zA-Z0-9.-]+)?$"
+                        },
+                        "replicas": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "ports": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "required": ["name", "port"],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "pattern": "^[a-z][a-z0-9-]*$"
+                                    },
+                                    "port": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 65535
+                                    }
+                                }
+                            }
+                        },
+                        "resources": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string",
+                                    "pattern": "^\\d+m?$"
+                                },
+                                "memory": {
+                                    "type": "string",
+                                    "pattern": "^\\d+([KMGT]i)?$"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "database": {
+            "type": "object",
+            "required": ["Type", "Spec"],
+            "properties": {
+                "Type": {
+                    "type": "string",
+                    "enum": ["database"]
+                },
+                "Spec": {
+                    "type": "object",
+                    "required": ["engine", "version", "storage"],
+                    "properties": {
+                        "engine": {
+                            "type": "string",
+                            "enum": ["postgres", "mysql", "mongodb"]
+                        },
+                        "version": {
+                            "type": "string",
+                            "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+                        },
+                        "storage": {
+                            "type": "string",
+                            "pattern": "^\\d+[MGT]i$"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

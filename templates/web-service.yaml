@@ -1,0 +1,11 @@
+kind: Scope
+name: {{ .Name }}
+version: {{ .Version }}
+environment: {{ .Environment }}
+
+resources:
+  web:
+    type: service
+    spec:
+      image: {{ .Variables.image }}
+      replicas: {{ .Variables.replicas | default 2 }}

@@ -1,0 +1,11 @@
+kind: Scope
+name: my-app
+version: 1.0.0
+environment: development
+
+resources:
+  web:
+    type: service
+    spec:
+      image: nginx:1.21
+      replicas: 3
